@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+  
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emission Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: auto;
+      max-width: 1200px;
+      margin: 10px;
+
+    }
+
+    .box {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 20px;
+    }
+
+    input,
+    button {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #4f4caf;
+      color: white;
+      border: none;
+      cursor: pointer;
+      align-items: center;
+    }
+
+    button:hover {
+      background-color: #a04545;
+    }
+
+    .error-message {
+      color: red;
+    }
+
+    .main-content {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      justify-content: space-between;
+      margin-top: 10px;
+      flex-wrap: wrap;
+      /* Ensure cards wrap properly if the screen is small */
+    }
+
+    #vehicle-data {
+      display: grid;
+      grid-template-areas:
+        "temp time"
+        "co2 h2o"
+        "no2 turbidity";
+      gap: 20px;
+      justify-items: center;
+      max-width: 100%;
+      /* Make sure the grid container uses full width */
+      height: auto;
+      /* Let height adjust automatically based on content */
+      margin-top: 10px;
+    }
+
+    .card {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s ease;
+      width: 200px;
+      /* Set a fixed width for the cards */
+      height: 150px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card img {
+      width: 50px;
+      height: 50px;
+      margin-bottom: 10px;
+    }
+
+    /* Specific styles for each card */
+    .card.temp {
+      margin-top: 10px;
+      grid-area: temp;
+      background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+      height: 200px;
+    }
+
+    .card.time {
+      margin-top: 10px;
+      grid-area: time;
+      background: linear-gradient(to bottom, #a1c4fd, #c2e9fb);
+      height: 200px;
+    }
+
+    .card.co2 {
+      grid-area: co2;
+      background: linear-gradient(to bottom, #a8edea, #fed6e3);
+    }
+
+    .card.h2o {
+      grid-area: h2o;
+      background: linear-gradient(to bottom, #d4fc79, #96e6a1);
+    }
+
+    .card.no2 {
+      grid-area: no2;
+      background: linear-gradient(to bottom, #fddb92, #d1fdff);
+    }
+
+    .card.turbidity {
+      grid-area: turbidity;
+      background: linear-gradient(to bottom, #d4fc79, #96e6a1);
+    }
+
+    .card.ph {
+      grid-area: ph;
+      background: linear-gradient(to bottom, #fddb92, #d1fdff);
+      margin-left: -600px;
+    }
+
+    #vehicle-table {
+      flex: 1;
+      max-width: 680px;
+      width: 100%;
+      margin-left: -350px;
+      margin-top: 20px;
+    }
+
+    #vehicle-table table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    #vehicle-table th,
+    #vehicle-table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    #vehicle-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+
+    #vehicle-container {
+      display: flex;
+      flex: 1;
+      height: 100%;
+      padding: 20px;
+      justify-content: flex-start;
+    }
+
+    /* #project-info {
+          width: 15%;
+          
+          background-color: white;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+          height: 230px;
+          position: fixed;
+          top: 0;
+          left: 5px;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          height: 220px;
+          margin-top: -20px;
+          align-items: center;
+
+      }
+
+      #project-info h2 {
+          font-size: 1.5rem;
+          margin-bottom: 20px;
+          color: #333;
+          text-align: center;
+          border-bottom: 2px solid #ddd;
+          padding-bottom: 10px;
+          width: 100%;
+      } */
+
+    #vehicle-error-message {
+      font-size: 0.9rem;
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* Updated layout to have Project Info on the left */
+    .main-content {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      flex: 1;
+      overflow: hidden;
+      margin-top: -20px;
+
+    }
+
+    canvas#vehicleChart {
+      width: 100%;
+      max-width: 680px;
+      height: 400px;
+      max-height: 400px;
+      background: linear-gradient(to bottom, #e0f7fa, #e1bee7);
+      margin: 20px auto;
+      border-radius: 10px;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+      margin-left: 520px;
+      margin-top: -330px;
+    }
+
+
+
+
+
+    #separate-graphs-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      /* Two graphs per row */
+      gap: 60px;
+      /* Space between graphs */
+      padding: 20px;
+      justify-content: space-between;
+      /* Spread graphs across the full width */
+      align-items: start;
+      /* Align graphs at the top of the grid */
+    }
+
+    /* Temperature Graph */
+    #tempGraph-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      /* Full width */
+    }
+
+    #tempGraph-section canvas {
+      width: 100%;
+      max-width: 600px;
+      /* Expand to a larger size */
+      height: 600px;
+      border: 2px solid #6ab7ff;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(106, 183, 255, 0.4);
+    }
+
+    /* CO2 Graph */
+    #co2Graph-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      /* Full width */
+    }
+
+    #co2Graph-section canvas {
+      width: 100%;
+      max-width: 600px;
+      /* Expand to a larger size */
+      height: 600px;
+      border: 2px solid #6ab7ff;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(106, 183, 255, 0.4);
+    }
+
+    /* H2O Graph */
+    #h2oGraph-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      /* Full width */
+    }
+
+    #h2oGraph-section canvas {
+      width: 100%;
+      max-width: 600px;
+      /* Expand to a larger size */
+      height: 600px;
+      border: 2px solid #4caf50;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    /* NO2 Graph */
+    #no2Graph-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      /* Full width */
+    }
+
+    #no2Graph-section canvas {
+      width: 100%;
+      max-width: 600px;
+      /* Expand to a larger size */
+      max-height: 320px;
+      height: 100%;
+      border: 2px solid #ffeb3b;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(255, 235, 59, 0.4);
+    }
+
+    #turbidity-ph-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      /* Two graphs per row */
+      gap: 30px;
+      /* Space between the graphs */
+      padding: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Common Graph Section Styling */
+    .graph-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(145deg, #ffffff, #f0f0f0);
+      /* Subtle gradient */
+      transition: transform 0.2s, box-shadow 0.2s;
+      height: 400px;
+      /* Consistent height for all graph sections */
+    }
+
+    .graph-section:hover {
+      transform: scale(1.02);
+      /* Slight zoom effect on hover */
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      /* Enhance shadow on hover */
+    }
+
+    /* Canvas Styling */
+    .graph-section canvas {
+      width: 100%;
+      /* Ensure canvas occupies full width of its parent */
+      height: 100%;
+      /* Ensure canvas height matches the section */
+      max-height: 350px;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Turbidity Graph Specific Styling */
+    #turbidityGraph-section {
+      border-color: rgba(255, 159, 64, 0.5);
+    }
+
+    #turbidityGraph-section canvas {
+      border-color: rgba(255, 159, 64, 1);
+      box-shadow: 0 10px 20px rgba(255, 159, 64, 0.2);
+    }
+
+    /* pH Graph Specific Styling */
+    #phGraph-section {
+      border-color: rgba(75, 192, 192, 0.5);
+    }
+
+    #phGraph-section canvas {
+      border-color: rgba(75, 192, 192, 1);
+      box-shadow: 0 10px 20px rgba(75, 192, 192, 0.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      #turbidity-ph-container {
+        grid-template-columns: repeat(1, 1fr);
+        /* Single column on smaller screens */
+        gap: 20px;
+      }
+
+      .graph-section {
+        height: 350px;
+        /* Adjust height for smaller screens */
+      }
+    }
+
+
+
+
+
+
+
+
+    .header {
+      width: 100%;
+      position: absolute;
+      /* Sticks the header to the top */
+      top: 0;
+      left: 0;
+
+
+      z-index: 1000;
+      /* Ensure it stays above all other elements */
+      display: flex;
+      justify-content: end;
+
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-top: -20px;
+    }
+
+    .logo {
+      width: 150px;
+      /* Adjust the size */
+      height: auto;
+    }
+
+    body {
+      padding-top: 60px;
+      /* Prevent content from overlapping with the fixed header */
+    }
+
+
+
+    .results-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.results-section h2 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.input-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.input-group input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 200px;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+}
+
+.input-group select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+}
+
+.input-group button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: 'Arial', sans-serif;
+}
+
+.input-group button:hover {
+    background-color: #0056b3;
+}
+
+#results-table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+    font-family: 'Arial', sans-serif;
+}
+
+#results-table h3 {
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 20px;
+    color: #333;
+}
+
+#results-table th,
+#results-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+#results-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+#results-table td {
+    background-color: #f9f9f9;
+}
+
+#results-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+#results-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Row-specific styling for matching and non-matching ranges */
+.row-green {
+    background-color: #96e8a9;
+    color: #00ff3c;
+}
+
+.row-red {
+    background-color: #df989e;
+    color: #ff0019;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .input-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .input-group input[type="text"],
+    .input-group select {
+        width: 100%;
+    }
+
+    .results-section {
+        padding: 15px;
+        max-width: 100%;
+    }
+}
+
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <img src="images/TRI44.png" alt="Logo" class="logo">
+    </div>
+  </header>
+
+  <div class="container" id="login-container">
+
+
+
+    <div class="box">
+      <h1>Welcome</h1>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button onclick="login()">Login</button>
+      <p id="error-message" class="error-message"></p>
+    </div>
+  </div>
+
+  <div class="container" id="vehicle-container" style="display:none;">
+    <div class="main-content">
+      <div id="project-info">
+
+        <p id="vehicle-error-message" class="error-message"></p>
+      </div>
+      <div class="main-content">
+        <div id="vehicle-data"></div>
+        <div id="vehicle-table" style="display: none;">
+          <!-- <h2>Spreadsheet View</h2> -->
+          <table>
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody id="vehicle-table-body">
+              <!-- Rows added dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="graph-container" style="display: none; width: 100%; margin-top: 20px;">
+
+      <canvas id="vehicleChart"></canvas>
+    </div>
+
+
+    <div id="separate-graphs-container" style="display: none;">
+      <!-- Temperature Graph -->
+      <div id="tempGraph-section">
+        <h3>Temperature</h3>
+        <canvas id="tempGraph"></canvas>
+      </div>
+
+      <!-- CO2 Graph -->
+      <div id="co2Graph-section">
+        <h3>CO2</h3>
+        <canvas id="co2Graph"></canvas>
+      </div>
+
+      <!-- H2O Graph -->
+      <div id="h2oGraph-section">
+        <h3>CO</h3>
+        <canvas id="h2oGraph"></canvas>
+      </div>
+
+      <!-- NO2 Graph -->
+      <div id="no2Graph-section">
+        <h3>NO2</h3>
+        <canvas id="no2Graph"></canvas>
+      </div>
+      <div id="turbidityGraph-section" class="graph-section">
+        <h3>HYDRO CARBON</h3>
+        <canvas id="turbidityGraph"></canvas>
+      </div>
+
+
+    </div>
+
+
+    <!-- Results Section -->
+    <div class="results-section" style="display: none;">
+      <h2>Vehicle Analysis</h2>
+      <div class="input-group">
+        <input type="text" id="vehicle-details" placeholder="Enter Vehicle Details">
+        <select id="fuel-type">
+          <option value="petrol">Petrol</option>
+          <option value="diesel">Diesel</option>
+        </select>
+        <button onclick="analyzeVehicle()">Analyze</button>
+      </div>
+      <div id="results-table" style="display:none;">
+        <h3>Results</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Vehicle Details</th>
+              <th>Parameter</th>
+              <th>Recorded Range</th>
+              <th>Current Value</th>
+              
+            </tr>
+          </thead>
+          <tbody id="results-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+
+
+
+  </div>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="script.js?v=1.0.22"></script>
+</body>
+
+</html>
